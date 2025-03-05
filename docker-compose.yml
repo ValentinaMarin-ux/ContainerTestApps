@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  db_movie_rental:
+    build: 
+      context: ./MySQL
+      dockerfile: Dockerfile
+    container_name: mysql_movie_rental
+    restart: always
+    ports:
+      - 5500:3306
+    volumes:
+      - ./Config/mysql:/var/lib/mysql
+    hostname: apps_database
+    networks:
+      - movie_rental_network
+    healthcheck:
+        test: ["CMD","mysql", "-u", "val123", "-pMiau123"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+# --------------------------------------------------------------------
+  # - The adminer is a tool for managing content in databases.
+  adminer:
+    image: adminer
+    container_name: adminer_movie_rental
+    restart: always
+    ports:
+      - 8000:8081
+    networks:
+      - movie_rental_network
+# --------------------------------------------------------------------
+
+networks:
+  movie_rental_network:
+      driver: bridge
+      name: movie_rental_network
